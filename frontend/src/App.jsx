@@ -16,10 +16,14 @@ function App() {
     setContacts(data.contacts)
   }
 
+  const updateContactsList = () => {
+    fetchContacts()
+  }
+
   return (
     <>
       <ContactList contacts={contacts} />
-      <ContactForm />
+      <ContactForm onContactCreated={updateContactsList} />
     </>
   )
 }

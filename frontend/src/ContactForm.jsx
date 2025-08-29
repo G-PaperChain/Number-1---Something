@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const ContactForm = ({ }) => {
+const ContactForm = ({ onContactCreated }) => {
     const [firstName, setfirstName] = useState('')
     const [lastName, setlastName] = useState('')
     const [email, setEmail] = useState('')
@@ -9,8 +9,8 @@ const ContactForm = ({ }) => {
         e.preventDefault()
 
         const data = {
-            first_name: firstName,
-            last_name: lastName,
+            firstName,    // Changed from first_name to firstName
+            lastName,     // Changed from last_name to lastName
             email
         }
 
@@ -27,33 +27,53 @@ const ContactForm = ({ }) => {
 
         if (response.status != 201 && response.status != 200) {
             const message = await response.json()
-            alert(data.message)
+            alert(message.message)  // Fixed: was data.message, now message.message
         } else {
-            // successful 
+            // Clear form fields on success
+            setfirstName('')
+            setlastName('')
+            setEmail('')
+            
+            // Refresh contacts list if callback provided
+            if (onContactCreated) {
+                onContactCreated()
+            }
         }
     }
-
-
 
     return (
         <form onSubmit={onSubmit}>
             <div>
                 <label htmlFor="firstName">First Name: </label>
-                <input type="text" value={firstName} id="firstName" onChange={(e) => { setfirstName(e.target.value) }} />
+                <input 
+                    type="text" 
+                    value={firstName} 
+                    id="firstName" 
+                    onChange={(e) => { setfirstName(e.target.value) }} 
+                />
             </div>
 
             <div>
                 <label htmlFor="lastName">Last Name: </label>
-                <input type="text" value={lastName} id="lastName" onChange={(e) => { setlastName(e.target.value) }} />
+                <input 
+                    type="text" 
+                    value={lastName} 
+                    id="lastName" 
+                    onChange={(e) => { setlastName(e.target.value) }} 
+                />
             </div>
 
             <div>
                 <label htmlFor="email">Email: </label>
-                <input type="text" value={email} id="email" onChange={(e) => { setEmail(e.target.value) }} />
+                <input 
+                    type="text" 
+                    value={email} 
+                    id="email" 
+                    onChange={(e) => { setEmail(e.target.value) }} 
+                />
             </div>
 
             <button type="submit"> Create Contact </button>
-
         </form>
     )
 }
