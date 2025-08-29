@@ -1,22 +1,24 @@
 import React, { useState } from 'react'
 
-const ContactForm = ({ onContactCreated }) => {
-    const [firstName, setfirstName] = useState('')
-    const [lastName, setlastName] = useState('')
-    const [email, setEmail] = useState('')
+const ContactForm = ({ existingContact = {}, updateCallback }) => {
+    const [firstName, setfirstName] = useState(existingContact.firstName || '')
+    const [lastName, setlastName] = useState(existingContact.lastName || '')
+    const [email, setEmail] = useState(existingContact.email || '')
+
+    const updating = Object.entries(existingContact).length !== 0
 
     const onSubmit = async (e) => {
         e.preventDefault()
 
         const data = {
-            firstName,    // Changed from first_name to firstName
-            lastName,     // Changed from last_name to lastName
+            firstName,   
+            lastName,  
             email
         }
 
-        const url = "http://127.0.0.1:5000/create_contact"
+        const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact")
         const options = {
-            method: "POST",
+            method: updating ? "PATCH" : "POST",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -27,12 +29,9 @@ const ContactForm = ({ onContactCreated }) => {
 
         if (response.status != 201 && response.status != 200) {
             const message = await response.json()
-            alert(message.message)  // Fixed: was data.message, now message.message
+            alert(message.message)
         } else {
-            // Clear form fields on success
-            setfirstName('')
-            setlastName('')
-            setEmail('')
+            updateCallback()
             
             // Refresh contacts list if callback provided
             if (onContactCreated) {
@@ -73,7 +72,7 @@ const ContactForm = ({ onContactCreated }) => {
                 />
             </div>
 
-            <button type="submit"> Create Contact </button>
+            <button type="submit">{ updating ? "Update" : "Create"}</button>
         </form>
     )
 }

@@ -45,7 +45,7 @@ def update_contact(user_id):
 
     return jsonify({"message" : "User Updated."}), 200
 
-@app.route("/delete/<int:user_id>", methods=['DELETE'])
+@app.route("/delete_contact/<int:user_id>", methods=['DELETE'])
 def delete_contact(user_id):
     contact = Contact.query.get(user_id)
 
