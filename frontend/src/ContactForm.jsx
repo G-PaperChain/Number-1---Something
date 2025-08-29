@@ -9,8 +9,8 @@ const ContactForm = ({ }) => {
         e.preventDefault()
 
         const data = {
-            firstName,
-            lastName,
+            first_name: firstName,
+            last_name: lastName,
             email
         }
 
@@ -22,7 +22,7 @@ const ContactForm = ({ }) => {
             },
             body: JSON.stringify(data)
         }
-        
+
         const response = await fetch(url, options)
 
         if (response.status != 201 && response.status != 200) {
